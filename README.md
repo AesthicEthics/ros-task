@@ -26,8 +26,6 @@ The robot localization happened through the `/odom` topic. The `/odom` topic pub
 **Software Modularity:**
 An additional `PIDController` class was spun up to effectively increase modularity of the written code. This was done by decoupling the computational functionality from the node itself allowing the computational functions to be plug-and-play with other potential nodes and reducing debug time. This maintains code readability, organization, and makes state-management a lot nicer all while making the code more extensible.
 
-#### Other Potential Approaches
-
 ### Results
 
 The results matched & surpassed the minimum specified thresholds with **Euclidian Distance Error <= 3cm** and **Pose Error < 0.1 rad** all while maintaing non-turtle speed 😊
@@ -84,14 +82,6 @@ https://github.com/user-attachments/assets/7a936c04-a984-42ab-978f-43c978672d21
 ./scripts/deploy/devel.sh # To enter the docker container
 ros2 launch limo_simulation limo.launch.py # To launch the simulator
 ```
-
-### What do I edit?
-
-1. Modify the package `limo_control` in the workspace directory for adding your c++ controller program.
-2. Make a launch file that can launch everything (Controller and Simualation).
-3. Modify `scripts/deploy/app.sh` such that, when `scripts/deploy/start.sh` is run, the task is executed automatically.
-
-### Known Issues
 
 1. This will not work with docker desktop, please do not use it, use the default engine.
 
