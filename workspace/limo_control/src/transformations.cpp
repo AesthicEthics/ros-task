@@ -6,7 +6,7 @@ PIDController::PIDController(const float& inputkP_LINEAR, const float& inputkP_A
     // create CSV files
     csv_file_.open("robot_data.csv", std::ios::out);
     if (csv_file_.is_open()) {
-        csv_file_ << "Time,x,y,DistanceError,OrientationError,LinearVelocity,AngularVelocity\n"; 
+        csv_file_ << "Time,OrientationError\n"; 
     }
 
     KP_LINEAR = inputkP_LINEAR;
@@ -37,12 +37,14 @@ void PIDController::computeLinearOutputSignal(
     // set arrived flag
     arrived = std::abs(error) <= 0.03 ? true : false;
 
-    if (csv_file_.is_open()) {
-        csv_file_ << rclcpp::Clock().now().nanoseconds()/1e6 << std::fixed 
-                  <<"," << currentPoint->x << "," << currentPoint->y << ","
-                  << error << ",,"  // Log distance error
-                  << outputSignal << "," << " \n";  // Log linear output
-    }
+    //uncomment to log accordingly
+
+    // if (csv_file_.is_open()) {
+    //     csv_file_ << rclcpp::Clock().now().nanoseconds()/1e6 << std::fixed 
+    //               <<"," << currentPoint->x << "," << currentPoint->y << ","
+    //               << error << ",,"  // Log distance error
+    //               << outputSignal << "," << " \n";  // Log linear output
+    // }
 };
 
 void PIDController::computeAngularOutputSignal(
@@ -57,18 +59,18 @@ void PIDController::computeAngularOutputSignal(
     double error = goalPose - yaw;
     angularErrorSum += error;
 
+    // mitigate intial spawn offset
     if(firstRun){
         yaw += 0.30;
         firstRun = false;
     }
 
-
-    // // Normalize the error to be within [-pi, pi]
-    // if (error > M_PI) {
-    //     error -= 2 * M_PI;
-    // } else if (error < -M_PI) {
-    //     error += 2 * M_PI;
-    // }
+    // Normalize the error to be within [-pi, pi]
+    if (error > M_PI) {
+        error -= 2 * M_PI;
+    } else if (error < -M_PI) {
+        error += 2 * M_PI;
+    }
 
     prevErrorAngular = error;
 
@@ -84,9 +86,7 @@ void PIDController::computeAngularOutputSignal(
 
     if (csv_file_.is_open()) {
         csv_file_ << rclcpp::Clock().now().nanoseconds()/1e6 << std::fixed
-                  << ",,,,"
-                  << error << ",,"   // Log orientation error
-                  << outputSignal << "\n";  // Log angular output
+                  << "," << error << "\n";
     }
 
 };
@@ -105,13 +105,14 @@ void PIDController::modifiedEuclidianDistance(
 
     // continously update heading to (x_g, y_g) from current point
     heading = std::atan2((goalPoint->y - currentPoint ->y), (goalPoint -> x - currentPoint -> x));
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Heading to goal: %f radians", heading);
 
-    if (csv_file_.is_open()){
-    csv_file_ << rclcpp::Clock().now().nanoseconds()/1e6 << std::fixed
-             << ",,,"
-              << distance << "," << heading << ",,\n";
-    }
+    //uncomment to log accordingly
+
+    // if (csv_file_.is_open()){
+    // csv_file_ << rclcpp::Clock().now().nanoseconds()/1e6 << std::fixed
+    //          << ",,,"
+    //           << distance << "," << heading << ",,\n";
+    // }
 }
 
 
@@ -128,8 +129,6 @@ void quaternionToeuler(
 
     tf2::Matrix3x3 m(q);
     m.getRPY(roll, pitch, yaw);
-
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Current heading (yaw): %f radians", yaw);
 };
 
 PIDController::~PIDController(){

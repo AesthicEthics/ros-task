@@ -63,7 +63,7 @@ class PIDController {
 };
 
 
-/// @brief 
+/// @brief Convert Quaternion Poses To Euler Poses 
 /// @param geometry_msgs::msg::Pose::SharedPtr quatPose 
 /// @param double& roll 
 /// @param double& pitch 

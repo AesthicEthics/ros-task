@@ -17,8 +17,8 @@ limoController::limoController() : Node("limo_controller"){
     );
 
     // set up goal point 
-    goalPoint.x = 10;
-    goalPoint.y = 10;
+    goalPoint.x = 4;
+    goalPoint.y = 5;
     goalPoint.z = 0;
     // set up goal pose
     goalPose = 0.1; 
