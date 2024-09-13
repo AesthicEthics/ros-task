@@ -36,20 +36,34 @@ The results matched & surpassed the minimum specified thresholds with **Euclidia
 ![output](https://github.com/user-attachments/assets/6cc9b754-e562-4004-87ed-596197915c38)
 
 #### Demo Video
-https://youtu.be/Y3LloVwmLyc
+
+https://github.com/user-attachments/assets/7a936c04-a984-42ab-978f-43c978672d21
+
 
 ### Areas For Improvement
 
 #### Software
 
-**Input As ROS Services**
-**Logging Class**
+* Goal Input As ROS Services:
+  - Instead of specifying the goal points in the node file, it would be nice to make a ROS Service so that we can continously change points without having to rebuild and potentially even use scripts to automate the process of giving input and extracting output from the simulations
+    
+* Logging Class
+  - Instead of having scattered logs right now, more time could be spent creating a custom logging wrapper to enhance logging capabilites to allow us to capture a diverse set of logs and data. 
 
 #### Control
 
-**Robust Kinematics Based Tuning**
+* Robust PID Tuning & Gain Scheduling
+  - From the graphs, it is evident that the Robot, while meeting the requirements, is less precise when trying to navigate situations with sharp/short turns. This could be improved by by leveraging state-models and software (e.x. simulink) to effectively tune the PID for car instead of observablility based trial and error. Moreover, we can look to adapt dynamic PID techniques such as Gain scheduling to fine-tune PID constants for specific scenarios and swap them in and out as needed.
+  
+* Sensor Suite & Localization
+  - Instead of having hardcoded transformations, we can look to develop a Global frame of reference and use **tf2** library to develop more robot `/odom` to world frame translations for the simulation. However, since autonomous vehicles in real life don't have that oppurtunity, we can always move towards better locationalization techniques by introducing things like sensor fusion.
 
-**Sensor Suite & Localization**
+* AntiWindUp & Derivate Control
+  - Since we are using integral to get rid of the steady state error and provide orientation intertia, we are susceptible to integral/error windup which can cause oscillations. In order to reduce the chances of such oscillations we can use anti-windup techniques like clamping to prevent overcompenstation. Morever, we can also introduce derivative control to further dampen our control system.
+
+* Security
+  - It might be beneficial to add security feature to the car like max linear velocity, max angular velocity, max rotation and etc as "safety" percuations
+ 
 
 ### Software Structure
 ```
